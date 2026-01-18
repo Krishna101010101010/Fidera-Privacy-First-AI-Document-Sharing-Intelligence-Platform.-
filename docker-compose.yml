@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: fidera_user
+      POSTGRES_PASSWORD: fidera_password
+      POSTGRES_DB: fidera_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - fidera-net
+
+  minio:
+    image: minio/minio
+    restart: always
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: fidera_minio
+      MINIO_ROOT_PASSWORD: fidera_minio_password
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - fidera-net
+
+  # Service to create default buckets in MinIO
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc config host add myminio http://minio:9000 fidera_minio fidera_minio_password;
+      /usr/bin/mc mb myminio/fidera-staging;
+      /usr/bin/mc mb myminio/fidera-secure;
+      /usr/bin/mc anonymous set public myminio/fidera-staging;
+      exit 0;
+      "
+    networks:
+      - fidera-net
+
+volumes:
+  postgres_data:
+  minio_data:
+
+networks:
+  fidera-net:
