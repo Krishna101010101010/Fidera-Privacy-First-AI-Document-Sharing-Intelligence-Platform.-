@@ -2,8 +2,10 @@ from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
 from app.services.ai import ai_service
 from app.models.chat import ChatRequest, ModelList
+import logging
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 @router.get("/models", response_model=ModelList)
 async def get_models():
@@ -19,7 +21,33 @@ async def chat_message(request: ChatRequest):
     if not ai_service.check_ollama():
         raise HTTPException(status_code=503, detail="Ollama service not running at http://localhost:11434")
 
-    return StreamingResponse(
-        ai_service.chat(request.file_id, request.message, request.model),
-        media_type="text/plain"
-    )
+    try:
+        return StreamingResponse(
+            ai_service.chat(request.file_id, request.message, request.model),
+            media_type="text/plain"
+        )
+    except Exception as e:
+        logger.error(f"Chat failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/debug/{file_id}")
+async def debug_chat(file_id: str):
+    """
+    Debug: Inspect indexed content for a file.
+    """
+    try:
+        # Query Chroma directly
+        count = ai_service.chroma_collection.count()
+        results = ai_service.chroma_collection.get(
+            where={"file_id": file_id},
+            limit=5
+        )
+        return {
+            "file_id": file_id,
+            "total_collection_response": count,
+            "indexed_chunks_count": len(results['ids']),
+            "snippets": results['documents'],
+            "metadatas": results['metadatas']
+        }
+    except Exception as e:
+        return {"error": str(e)}
