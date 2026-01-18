@@ -35,5 +35,18 @@ export const api = {
         const res = await fetch(`${API_BASE_URL}/files/${file_id}`);
         if (!res.ok) throw new Error("File not found or expired");
         return res.json();
+    },
+
+    getModels: async (): Promise<{ models: string[] }> => {
+        const res = await fetch(`${API_BASE_URL}/chat/models`);
+        return res.json();
+    },
+
+    chatStream: async (file_id: string, message: string, model: string) => {
+        return fetch(`${API_BASE_URL}/chat/message`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ file_id, message, model }),
+        });
     }
 };

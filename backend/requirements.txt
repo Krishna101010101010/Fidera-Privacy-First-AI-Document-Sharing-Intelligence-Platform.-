@@ -19,3 +19,5 @@ tenacity                 # For retrying connections
 Pillow>=10.0.0           # For Image Metadata
 python-docx>=0.8.11      # For Word Doc Metadata
 mutagen>=1.46.0          # For Audio/Video Metadata
+chromadb>=0.4.0          # Vector Database for RAG
+sentence-transformers>=2.2.0 # For Local Embeddings

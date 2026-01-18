@@ -11,7 +11,9 @@ from app.core.db import get_session
 from app.core.config import get_settings
 from app.models.file import File, FileStatus, FileMetadataResponse, FileCreate, FileRead
 from app.services.storage import storage_service
+from app.services.storage import storage_service
 from app.services.metadata import metadata_service
+from app.services.ai import ai_service
 
 router = APIRouter()
 settings = get_settings()
@@ -88,8 +90,10 @@ async def stage_file(
 async def confirm_upload(
     file_id: UUID,
     expiry_hours: int,
+    background_tasks: BackgroundTasks,
     session: Session = Depends(get_session)
 ):
+
     """
     Step C: Sanitization & Secure Storage.
     1. Retrieve from Staging.
@@ -151,8 +155,8 @@ async def confirm_upload(
         session.add(db_file)
         session.commit()
         
-        # Trigger AI (Background Task placeholder)
-        # background_tasks.add_task(process_ai_pipeline, file_id)
+        # Trigger AI (Background Task)
+        background_tasks.add_task(ai_service.process_document_background, str(db_file.id), secure_filename)
         
         return {"status": "success", "file_id": db_file.id, "expires_at": db_file.expires_at}
         

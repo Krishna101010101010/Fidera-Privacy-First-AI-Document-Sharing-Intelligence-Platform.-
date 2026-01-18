@@ -1,0 +1,31 @@
+# System
+.DS_Store
+.checkpoints
+tmp/
+
+# Python
+venv/
+__pycache__/
+*.py[cod]
+*.so
+
+# Node
+node_modules/
+.next/
+out/
+build/
+dist/
+
+# Environment Variables
+.env
+.env.local
+
+# Fidera Specific
+chroma_db/
+temp_processing/
+minio_data/
+sample.pdf
+
+# IDEs
+.vscode/
+.idea/
