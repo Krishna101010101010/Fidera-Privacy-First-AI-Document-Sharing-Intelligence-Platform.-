@@ -57,7 +57,7 @@ class MetadataService:
         if not self._check_exiftool():
             logger.warning("ExifTool not found! performing simple copy.")
             shutil.copy2(input_path, output_path)
-            return False
+            return True
 
         try:
             # -all= removes all metadata

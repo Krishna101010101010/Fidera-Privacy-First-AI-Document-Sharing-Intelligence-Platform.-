@@ -1,6 +1,6 @@
 from minio import Minio
 from minio.error import S3Error
-import minio.common
+from minio.commonconfig import CopySource
 from app.core.config import get_settings
 import io
 
@@ -51,7 +51,7 @@ class StorageService:
         self.client.copy_object(
             settings.SECURE_BUCKET,
             secure_filename,
-            minio.common.CopySource(settings.STAGING_BUCKET, staging_filename)
+            CopySource(settings.STAGING_BUCKET, staging_filename)
         )
         
         # Delete from staging
