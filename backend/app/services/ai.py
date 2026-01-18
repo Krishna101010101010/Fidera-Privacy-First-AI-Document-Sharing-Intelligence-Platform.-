@@ -61,9 +61,29 @@ class AIService:
         Ingest document using LlamaIndex.
         """
         try:
-            # Load Data using SimpleDirectoryReader (supports PDF, Docx, etc automatically!)
+            # Load Data using SimpleDirectoryReader
             loader = SimpleDirectoryReader(input_files=[file_path])
             documents = loader.load_data()
+            
+            # Check for Scanned PDF (Empty Text)
+            total_text = "".join([d.text for d in documents])
+            if len(total_text.strip()) < 50 and file_path.lower().endswith(".pdf"):
+                logger.warning(f"File {file_id} seems empty/scanned. Attempting OCR...")
+                try:
+                    from app.services.ocr import ocr_processor
+                    ocr_text = ocr_processor.process_pdf(file_path)
+                    
+                    if ocr_text:
+                        # If existing docs, append to first one (hacky but works for RAG)
+                        # Or replace content.
+                        if documents:
+                            documents[0].text += "\n" + ocr_text
+                        else:
+                            # Create new document if none returned
+                            from llama_index.core import Document
+                            documents = [Document(text=ocr_text)]
+                except Exception as e:
+                    logger.error(f"OCR Fallback failed: {e}")
             
             # Attach Metadata
             for doc in documents:
