@@ -1,31 +1,45 @@
-import requests
 import logging
-import chromadb
-from chromadb.config import Settings
-from sentence_transformers import SentenceTransformer
-import PyPDF2
-from typing import List, Dict, Any, Generator
 import os
+import requests
+import json
+import chromadb
+from typing import List, Generator
+
+from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, StorageContext, Settings
+from llama_index.core.vector_stores import MetadataFilters, MetadataFilter, ExactMatchFilter
+from llama_index.vector_stores.chroma import ChromaVectorStore
+from llama_index.embeddings.huggingface import HuggingFaceEmbedding
+from llama_index.llms.ollama import Ollama
 
 logger = logging.getLogger(__name__)
 
 class AIService:
     def __init__(self):
         self.ollama_base_url = "http://localhost:11434"
-        self.chroma_client = chromadb.PersistentClient(path="./chroma_db")
-        self.collection = self.chroma_client.get_or_create_collection(name="fidera_docs")
+        self.chroma_path = "./chroma_db"
+        self.collection_name = "fidera_docs"
         
-        # Initialize Embeddings Model (lazy load suggested, but we do it here for simplicity)
+        # Initialize LlamaIndex Settings
+        # Embedding Model (Local)
+        # We perform lazy loading or check if it needs download
         try:
-            logger.info("Loading Embedding Model (all-MiniLM-L6-v2)...")
-            self.embed_model = SentenceTransformer('all-MiniLM-L6-v2')
-            logger.info("Embedding Model Loaded.")
+            Settings.embed_model = HuggingFaceEmbedding(model_name="all-MiniLM-L6-v2")
         except Exception as e:
             logger.error(f"Failed to load embedding model: {e}")
-            self.embed_model = None
+
+        # Default LLM (Placeholder, we set it dynamically per request)
+        try:
+            Settings.llm = Ollama(base_url=self.ollama_base_url, model="llama3", request_timeout=120.0)
+        except:
+             pass
+
+        # ChromaDB Client
+        self.chroma_client = chromadb.PersistentClient(path=self.chroma_path)
+        self.chroma_collection = self.chroma_client.get_or_create_collection(self.collection_name)
+        self.vector_store = ChromaVectorStore(chroma_collection=self.chroma_collection)
+        self.storage_context = StorageContext.from_defaults(vector_store=self.vector_store)
 
     def check_ollama(self) -> bool:
-        """Check if Ollama is running."""
         try:
             res = requests.get(f"{self.ollama_base_url}/")
             return res.status_code == 200
@@ -33,7 +47,6 @@ class AIService:
             return False
 
     def get_available_models(self) -> List[str]:
-        """Fetch available models from local Ollama."""
         try:
             res = requests.get(f"{self.ollama_base_url}/api/tags")
             if res.status_code == 200:
@@ -45,106 +58,64 @@ class AIService:
 
     def embed_document(self, file_id: str, file_path: str) -> bool:
         """
-        Ingest a document: Extract -> Chunk -> Embed -> Store.
+        Ingest document using LlamaIndex.
         """
-        if not self.embed_model:
-            logger.error("Embedding model not loaded.")
-            return False
-
         try:
-            text = ""
-            # Extract Text (Simple PDF extraction)
-            if file_path.lower().endswith(".pdf"):
-                with open(file_path, "rb") as f:
-                    pdf = PyPDF2.PdfReader(f)
-                    for page in pdf.pages:
-                        text += page.extract_text() + "\n"
-            else:
-                # TODO: Support text/docx
-                return False
-
-            if not text.strip():
-                logger.warning(f"No text extracted from {file_id}")
-                return False
-
-            # Chunking (Simple 1000 char chunks with overlap)
-            chunk_size = 1000
-            overlap = 100
-            chunks = []
-            for i in range(0, len(text), chunk_size - overlap):
-                chunks.append(text[i:i + chunk_size])
-
-            # Embed
-            embeddings = self.embed_model.encode(chunks)
+            # Load Data using SimpleDirectoryReader (supports PDF, Docx, etc automatically!)
+            loader = SimpleDirectoryReader(input_files=[file_path])
+            documents = loader.load_data()
             
-            # Store in Chroma
-            ids = [f"{file_id}_{i}" for i in range(len(chunks))]
-            metadatas = [{"file_id": str(file_id), "chunk_index": i} for i in range(len(chunks))]
+            # Attach Metadata
+            for doc in documents:
+                doc.metadata["file_id"] = str(file_id)
             
-            self.collection.add(
-                documents=chunks,
-                embeddings=embeddings.tolist(),
-                ids=ids,
-                metadatas=metadatas
+            # Index (automatically persists to Chroma via storage_context)
+            VectorStoreIndex.from_documents(
+                documents, 
+                storage_context=self.storage_context
             )
-            logger.info(f"Successfully embedded {len(chunks)} chunks for {file_id}")
+            logger.info(f"Successfully embedded {len(documents)} pages/chunks for {file_id}")
             return True
-
         except Exception as e:
-            logger.error(f"Ingestion failed for {file_id}: {e}")
+            logger.error(f"LlamaIndex Ingestion failed: {e}")
             return False
 
-    def chat(self, file_id: str, message: str, model: str) -> Generator[str, None, None]:
+    def chat(self, file_id: str, message: str, model_name: str) -> Generator[str, None, None]:
         """
-        RAG Chat Stream.
-        1. Context Search
-        2. Prompt Construction
-        3. Ollama Generation (Streamed)
+        RAG Chat using LlamaIndex Chat Engine with Context.
         """
-        if not self.embed_model:
-            yield "System Error: Embedding model missing."
-            return
-
-        # 1. Retrieve Context
-        query_embed = self.embed_model.encode([message]).tolist()
-        results = self.collection.query(
-            query_embeddings=query_embed,
-            n_results=3,
-            where={"file_id": str(file_id)}
-        )
-        
-        context_text = "\n\n".join(results['documents'][0]) if results['documents'] else "No context found."
-        
-        # 2. Build Prompt
-        prompt = f"""You are Fidera AI. Use the following document context to answer the user question.
-        If the answer is not in the context, say you don't know.
-
-        Context:
-        {context_text}
-
-        Question: {message}
-        Answer:"""
-
-        # 3. Call Ollama
         try:
-            payload = {
-                "model": model,
-                "prompt": prompt,
-                "stream": True
-            }
-            with requests.post(f"{self.ollama_base_url}/api/generate", json=payload, stream=True) as resp:
-                if resp.status_code != 200:
-                    yield f"Error from Ollama: {resp.text}"
-                    return
-                    
-                for line in resp.iter_lines():
-                    if line:
-                        data = json.loads(line)
-                        if "response" in data:
-                            yield data["response"]
-                            
+            # Load Index from Vector Store
+            index = VectorStoreIndex.from_vector_store(
+                self.vector_store,
+            )
+            
+            # Configure LLM
+            llm = Ollama(base_url=self.ollama_base_url, model=model_name, request_timeout=120.0)
+            
+            # Configure Filters (RAG)
+            # ExactMatchFilter is robust
+            filters = MetadataFilters(
+                filters=[ExactMatchFilter(key="file_id", value=str(file_id))]
+            )
+            
+            # Create Engine
+            # Use 'context' mode so it retrieves context + history
+            chat_engine = index.as_chat_engine(
+                chat_mode="context",
+                llm=llm,
+                filters=filters,
+                system_prompt="You are Fidera AI. Answer strictly using the provided context. If unsure, say 'I cannot find that information in the document'."
+            )
+            
+            # Stream Response
+            streaming_response = chat_engine.stream_chat(message)
+            for token in streaming_response.response_gen:
+                yield token
+                
         except Exception as e:
-            yield f"Connection Error: {str(e)}"
+            logger.error(f"Chat Error: {e}")
+            yield f"Error: {str(e)}"
 
     def process_document_background(self, file_id: str, storage_path: str):
         """
