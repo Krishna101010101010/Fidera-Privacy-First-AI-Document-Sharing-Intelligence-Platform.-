@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { api, FileMetadataResponse } from '@/lib/api';
 import { motion } from 'framer-motion';
-
+import Link from 'next/link';
 export default function Home() {
   const [file, setFile] = useState<File | null>(null);
   const [stagedData, setStagedData] = useState<FileMetadataResponse | null>(null);
@@ -47,7 +47,14 @@ export default function Home() {
           <div className="text-5xl">✅</div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-green-400 to-emerald-600 bg-clip-text text-transparent">File Secured & Shared</h1>
           <p className="text-neutral-400">Your privacy-sanitized document is ready.</p>
-          <button onClick={() => window.location.reload()} className="px-6 py-2 bg-neutral-800 rounded-full hover:bg-neutral-700">Send Another</button>
+          <div className="flex gap-4 justify-center">
+            <Link href={`/view/${stagedData?.file_id}`} className="px-6 py-2 bg-indigo-600 rounded-full hover:bg-indigo-500 font-bold transition">
+              View Document (Receive)
+            </Link>
+            <button onClick={() => window.location.reload()} className="px-6 py-2 bg-neutral-800 rounded-full hover:bg-neutral-700">
+              Send Another
+            </button>
+          </div>
         </motion.div>
       </div>
     );

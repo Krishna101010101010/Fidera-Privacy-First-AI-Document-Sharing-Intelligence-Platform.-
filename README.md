@@ -10,7 +10,7 @@ Open a terminal in this folder and run:
 ```bash
 docker-compose up -d
 ```
-*Wait 10-20 seconds for database to initialize.*
+Wait 10-20 seconds for database to initialize.
 
 ### 2. Start Backend (The Engine)
 Open a NEW terminal tab:

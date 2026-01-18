@@ -29,5 +29,11 @@ export const api = {
 
         if (!res.ok) throw new Error("Confirmation failed");
         return res.json();
+    },
+
+    getFileInfo: async (file_id: string) => {
+        const res = await fetch(`${API_BASE_URL}/files/${file_id}`);
+        if (!res.ok) throw new Error("File not found or expired");
+        return res.json();
     }
 };

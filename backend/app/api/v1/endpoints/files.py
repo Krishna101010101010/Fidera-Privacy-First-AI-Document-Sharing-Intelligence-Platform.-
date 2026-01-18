@@ -1,4 +1,5 @@
 from fastapi import APIRouter, UploadFile, File as FastAPIFile, Depends, HTTPException, BackgroundTasks
+from fastapi.responses import StreamingResponse
 from sqlmodel import Session
 from typing import Dict, Any
 from uuid import uuid4, UUID
@@ -8,7 +9,7 @@ from datetime import datetime, timedelta
 
 from app.core.db import get_session
 from app.core.config import get_settings
-from app.models.file import File, FileStatus, FileMetadataResponse, FileCreate
+from app.models.file import File, FileStatus, FileMetadataResponse, FileCreate, FileRead
 from app.services.storage import storage_service
 from app.services.metadata import metadata_service
 
@@ -163,4 +164,57 @@ async def confirm_upload(
             if os.path.exists(p):
                 os.remove(p)
 
+@router.get("/{file_id}", response_model=FileRead)
+async def get_file_info(
+    file_id: UUID,
+    session: Session = Depends(get_session)
+):
+    """
+    Get file metadata (for Viewer/Owner).
+    Checks expiry logic implicitly (should add expiry check here).
+    """
+    db_file = session.get(File, file_id)
+    if not db_file:
+        raise HTTPException(status_code=404, detail="File not found")
+        
+    # Expiry Check
+    if db_file.expires_at and db_file.expires_at < datetime.utcnow():
+        raise HTTPException(status_code=404, detail="File expired")
+        
+    return db_file
+
+@router.get("/{file_id}/content")
+async def get_file_content(
+    file_id: UUID,
+    session: Session = Depends(get_session)
+):
+    """
+    Streams the file content for viewing.
+    """
+    db_file = session.get(File, file_id)
+    if not db_file:
+        raise HTTPException(status_code=404, detail="File not found")
+    
+    # Expiry Check
+    if db_file.expires_at and db_file.expires_at < datetime.utcnow():
+        raise HTTPException(status_code=404, detail="File expired")
+        
+    if db_file.status != FileStatus.STORED:
+        raise HTTPException(status_code=400, detail="File not ready or available")
+        
+    try:
+        # Get stream from MinIO (Secure Bucket)
+        minio_stream = storage_service.get_file(settings.SECURE_BUCKET, db_file.storage_path)
+        
+        return StreamingResponse(
+            minio_stream,
+            media_type=db_file.content_type,
+            headers={
+                "Content-Disposition": f"inline; filename={db_file.filename}"
+            }
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 import io # Missing import
+

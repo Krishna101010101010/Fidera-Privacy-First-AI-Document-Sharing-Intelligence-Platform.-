@@ -72,4 +72,11 @@ class StorageService:
     def download_to_temp(self, bucket: str, filename: str, temp_path: str):
         self.client.fget_object(bucket, filename, temp_path)
 
+    def get_file(self, bucket: str, filename: str):
+        """Returns a MinIO response object which is streamable."""
+        try:
+            return self.client.get_object(bucket, filename)
+        except S3Error as e:
+            raise Exception(f"S3 Get Error: {e}")
+
 storage_service = StorageService()
