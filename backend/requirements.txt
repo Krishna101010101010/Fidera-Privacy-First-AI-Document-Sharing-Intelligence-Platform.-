@@ -25,3 +25,6 @@ llama-index>=0.10.0
 llama-index-llms-ollama
 llama-index-embeddings-huggingface
 llama-index-vector-stores-chroma
+passlib[bcrypt]          # Password Hashing
+python-jose[cryptography] # JWT Tokens
+python-multipart         # For OAuth2 Form Data

@@ -8,6 +8,7 @@ engine = create_engine(settings.DATABASE_URL, echo=True)
 
 def init_db():
     from app.models.file import File
+    from app.models.user import User
     SQLModel.metadata.create_all(engine)
 
 def get_session():

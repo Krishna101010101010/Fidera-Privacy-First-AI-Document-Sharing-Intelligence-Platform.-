@@ -1,7 +1,7 @@
 from fastapi import APIRouter, UploadFile, File as FastAPIFile, Depends, HTTPException, BackgroundTasks
 from fastapi.responses import StreamingResponse
-from sqlmodel import Session
-from typing import Dict, Any
+from sqlmodel import Session, select
+from typing import Dict, Any, List, Optional
 from uuid import uuid4, UUID
 import os
 import shutil
@@ -10,10 +10,11 @@ from datetime import datetime, timedelta
 from app.core.db import get_session
 from app.core.config import get_settings
 from app.models.file import File, FileStatus, FileMetadataResponse, FileCreate, FileRead
-from app.services.storage import storage_service
+from app.models.user import User
 from app.services.storage import storage_service
 from app.services.metadata import metadata_service
 from app.services.ai import ai_service
+from app.api import deps
 
 router = APIRouter()
 settings = get_settings()
@@ -22,7 +23,8 @@ TEMP_DIR = "temp_processing"
 @router.post("/stage", response_model=FileMetadataResponse)
 async def stage_file(
     file: UploadFile = FastAPIFile(...),
-    session: Session = Depends(get_session)
+    session: Session = Depends(get_session),
+    current_user: Optional[User] = Depends(deps.get_current_user_optional)
 ):
     """
     Step B1 & B2: Ephemeral Intake & Metadata Exposure.
@@ -55,7 +57,7 @@ async def stage_file(
         db_file = File(
             id=file_id,
             filename=file.filename,
-            owner_id=uuid4(), # Placeholder for Auth
+            owner_id=current_user.id if current_user else uuid4(), # Use real user ID or guest placeholder
             content_type=file.content_type or "application/octet-stream",
             file_size=os.path.getsize(temp_path),
             storage_path=temp_filename,
@@ -219,6 +221,20 @@ async def get_file_content(
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/dashboard", response_model=List[FileRead])
+async def get_my_files(
+    session: Session = Depends(get_session),
+    current_user: User = Depends(deps.get_current_user),
+    skip: int = 0,
+    limit: int = 100
+):
+    """
+    Dashboard: Get all files owned by the current user.
+    """
+    statement = select(File).where(File.owner_id == current_user.id).offset(skip).limit(limit).order_by(File.created_at.desc())
+    files = session.exec(statement).all()
+    return files
 
 import io # Missing import
 

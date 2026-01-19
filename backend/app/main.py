@@ -33,6 +33,14 @@ app.include_router(api_router, prefix=settings.API_V1_STR)
 @app.on_event("startup")
 def on_startup():
     init_db()
+    # Start ZeroHold Scheduler
+    from app.services.scheduler import scheduler
+    scheduler.start()
+
+@app.on_event("shutdown")
+def on_shutdown():
+    from app.services.scheduler import scheduler
+    scheduler.shutdown()
 
 @app.get("/")
 def root():
