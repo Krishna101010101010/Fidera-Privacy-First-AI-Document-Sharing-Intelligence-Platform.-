@@ -1,125 +1,136 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import ClickSpark from '@/components/ClickSpark';
-import PixelCard from '@/components/PixelCard';
 
 const Hyperspeed = dynamic(() => import('@/components/Hyperspeed'), {
   ssr: false,
   loading: () => <div className="w-full h-full bg-black" />
 });
 
-export default function MarketingPage() {
+export default function HomePage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   return (
-    <div className="min-h-screen bg-black text-white overflow-x-hidden">
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 bg-black/50 backdrop-blur-xl border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <div className="min-h-screen" style={{ fontFamily: "'PP Neue Montreal', 'Poppins', sans-serif" }}>
+      {/* Navigation - Fixed */}
+      <nav className="fixed top-0 w-full z-50 bg-black/90 backdrop-blur-xl border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-8 py-5 flex items-center justify-between">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center gap-3"
           >
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-600 via-blue-500 to-cyan-400 rounded-xl" />
-            <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
-              Fidera
-            </span>
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="40" height="40" rx="10" fill="white" />
+              <path d="M12 28V12H24V15H16V18H23V21H16V28H12Z" fill="black" />
+            </svg>
+            <span className="text-2xl font-semibold tracking-tight text-white" style={{ color: '#ffffff' }}>idera</span>
           </motion.div>
 
-          <div className="hidden md:flex items-center gap-8">
-            <a href="#how-it-works" className="text-gray-300 hover:text-white transition">How It Works</a>
-            <a href="#features" className="text-gray-300 hover:text-white transition">Features</a>
-            <a href="#security" className="text-gray-300 hover:text-white transition">Security</a>
-            <a href="#pricing" className="text-gray-300 hover:text-white transition">Pricing</a>
+          <div className="hidden md:flex items-center gap-10">
+            <a href="#how-it-works" className="text-gray-400 hover:text-white transition text-sm tracking-wide">How It Works</a>
+            <a href="#features" className="text-gray-400 hover:text-white transition text-sm tracking-wide">Features</a>
+            <a href="#security" className="text-gray-400 hover:text-white transition text-sm tracking-wide">Security</a>
+            <a href="#pricing" className="text-gray-400 hover:text-white transition text-sm tracking-wide">Pricing</a>
           </div>
 
-          <ClickSpark sparkColor="#06b6d4" sparkCount={10}>
-            <button className="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-cyan-600 rounded-full font-semibold hover:shadow-lg hover:shadow-cyan-500/50 transition-all">
+          <ClickSpark sparkColor="#fff" sparkCount={8}>
+            <button className="px-6 py-3 bg-white text-black rounded-full text-sm font-medium hover:bg-gray-100 transition-all">
               Get Early Access
             </button>
           </ClickSpark>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Hero Section - BLACK with Hyperspeed */}
+      <section className="relative min-h-screen flex items-center justify-center bg-black overflow-hidden">
         {/* Hyperspeed Background */}
         <div className="absolute inset-0 w-full h-full">
           <Hyperspeed
             effectOptions={{
+              distortion: 'turbulentDistortion',
+              length: 400,
+              roadWidth: 10,
+              islandWidth: 2,
+              lanesPerRoad: 3,
+              fov: 90,
+              fovSpeedUp: 150,
+              speedUp: 2,
+              carLightsFade: 0.4,
+              totalSideLightSticks: 50,
+              lightPairsPerRoadWay: 50,
+              shoulderLinesWidthPercentage: 0.05,
+              brokenLinesWidthPercentage: 0.1,
+              brokenLinesLengthPercentage: 0.5,
+              lightStickWidth: [0.12, 0.5],
+              lightStickHeight: [1.3, 1.7],
+              movingAwaySpeed: [60, 80],
+              movingCloserSpeed: [-120, -160],
+              carLightsLength: [400 * 0.05, 400 * 0.15],
+              carLightsRadius: [0.05, 0.14],
+              carWidthPercentage: [0.3, 0.5],
+              carShiftX: [-0.2, 0.2],
+              carFloorSeparation: [0.05, 1],
               colors: {
                 roadColor: 0x080808,
                 islandColor: 0x0a0a0a,
                 background: 0x000000,
-                shoulderLines: 0x8b5cf6,
-                brokenLines: 0x06b6d4,
-                leftCars: [0x8b5cf6, 0x3b82f6, 0x06b6d4],
-                rightCars: [0x06b6d4, 0x3b82f6, 0x8b5cf6],
-                sticks: 0x06b6d4
+                shoulderLines: 0x131318,
+                brokenLines: 0x131318,
+                leftCars: [0xdc5b20, 0xdca320, 0xdc2020],
+                rightCars: [0x334bf7, 0xe5e6ed, 0xbfc6f3],
+                sticks: 0xc5e8eb
               }
             }}
           />
         </div>
 
-        {/* Hero Content */}
-        <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
+        {/* Hero Content - Positioned at bottom */}
+        <div className="relative z-10 max-w-5xl mx-auto px-8 text-center mt-32">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="space-y-8"
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
-            <div className="inline-block px-6 py-2 bg-gradient-to-r from-purple-600/20 to-cyan-600/20 backdrop-blur-sm rounded-full border border-purple-500/30">
-              <span className="text-sm font-medium bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
-                Privacy-First AI Document Sharing Platform
-              </span>
+            <div className="inline-block px-5 py-2 bg-white/10 backdrop-blur-sm rounded-full mb-8 border border-white/20">
+              <span className="text-sm font-medium text-white/80 tracking-wide">Privacy-First Platform</span>
             </div>
 
-            <h1 className="text-6xl md:text-8xl font-black tracking-tight leading-[1.1]">
-              <span className="bg-gradient-to-r from-white via-purple-200 to-white bg-clip-text text-transparent">
-                Share Documents
-              </span>
+            <h1 className="text-5xl md:text-7xl font-semibold tracking-tight leading-[1.1] mb-8">
+              <span className="text-white" style={{ color: '#ffffff' }}>Share Documents</span>
               <br />
-              <span className="bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                Without the Data Leak
+              <span className="text-gray-300" style={{ color: '#d1d5db' }}>
+                Without the Risk
               </span>
             </h1>
 
-            <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto mb-10 leading-relaxed" style={{ color: '#d1d5db' }}>
               Automatic metadata stripping, AI-powered intelligence, and zero-hold deletion.
-              The future of secure document sharing is here.
+              The modern way to share sensitive documents.
             </p>
 
-            <div className="flex flex-wrap gap-4 justify-center pt-6">
-              <ClickSpark sparkColor="#8b5cf6" sparkCount={12} sparkRadius={20}>
-                <button className="px-10 py-5 bg-gradient-to-r from-purple-600 to-cyan-600 rounded-full font-bold text-lg shadow-2xl shadow-purple-500/50 hover:shadow-cyan-500/50 transition-all hover:scale-105">
+            <div className="flex flex-wrap gap-4 justify-center">
+              <ClickSpark sparkColor="#fff" sparkCount={12} sparkRadius={20}>
+                <button className="px-10 py-4 bg-white text-black rounded-full font-medium text-lg hover:bg-gray-100 transition-all hover:scale-105">
                   Get Early Access
                 </button>
               </ClickSpark>
 
-              <ClickSpark sparkColor="#06b6d4" sparkCount={8}>
-                <button className="px-10 py-5 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full font-bold text-lg hover:bg-white/20 transition-all">
-                  See How It Works
-                </button>
-              </ClickSpark>
+              <button className="px-10 py-4 bg-white/10 text-white rounded-full font-medium text-lg border border-white/20 hover:bg-white/20 transition-all backdrop-blur-sm">
+                See How It Works
+              </button>
             </div>
 
-            <div className="flex items-center justify-center gap-8 pt-12 text-sm text-gray-500">
+            <div className="flex items-center justify-center gap-8 mt-12 text-sm text-gray-400">
               <div className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
+                <span className="w-2 h-2 bg-green-400 rounded-full"></span>
                 <span>No credit card required</span>
               </div>
               <div className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
+                <span className="w-2 h-2 bg-green-500 rounded-full"></span>
                 <span>2-minute setup</span>
               </div>
             </div>
@@ -128,40 +139,40 @@ export default function MarketingPage() {
 
         {/* Scroll Indicator */}
         <motion.div
-          animate={{ y: [0, 10, 0] }}
+          animate={{ y: [0, 8, 0] }}
           transition={{ repeat: Infinity, duration: 2 }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2"
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20"
         >
           <div className="w-6 h-10 border-2 border-white/30 rounded-full flex items-start justify-center p-2">
-            <div className="w-1 h-3 bg-gradient-to-b from-purple-400 to-cyan-400 rounded-full" />
+            <div className="w-1 h-3 bg-white/50 rounded-full" />
           </div>
         </motion.div>
       </section>
 
-      {/* Problem Statement */}
-      <section className="relative py-32 bg-gradient-to-b from-black via-purple-950/10 to-black">
-        <div className="max-w-6xl mx-auto px-6">
+      {/* ============ WHITE SECTION STARTS HERE ============ */}
+
+      {/* Problem Statement - WHITE */}
+      <section className="py-32 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="text-center mb-20"
           >
-            <h2 className="text-5xl md:text-6xl font-bold mb-6">
-              <span className="bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent">
-                Your Documents Are Leaking Data
-              </span>
+            <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-6 text-gray-900">
+              Your Documents Are <span className="text-red-500">Leaking Data</span>
             </h2>
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              Every file you share contains hidden metadata that exposes your location, device, identity, and more.
+            <p className="text-xl text-gray-500 max-w-2xl mx-auto">
+              Every file you share contains hidden metadata that exposes your location, device, and identity.
             </p>
           </motion.div>
 
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { icon: '📍', title: 'GPS Location', desc: 'Your exact coordinates embedded in photos' },
-              { icon: '🔍', title: 'Device Info', desc: 'Camera model, software, serial numbers' },
-              { icon: '👤', title: 'Identity Data', desc: 'Author names, company info, edit history' }
+              { icon: '📍', title: 'GPS Location', desc: 'Exact coordinates embedded in photos and documents' },
+              { icon: '🔍', title: 'Device Info', desc: 'Camera model, software version, serial numbers' },
+              { icon: '👤', title: 'Identity Data', desc: 'Author names, company info, editing history' }
             ].map((item, i) => (
               <motion.div
                 key={i}
@@ -169,39 +180,39 @@ export default function MarketingPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="p-8 bg-gradient-to-br from-red-950/20 to-orange-950/20 backdrop-blur-sm border border-red-500/20 rounded-2xl"
+                className="p-8 bg-white rounded-3xl border border-gray-200 hover:shadow-xl transition-all"
               >
-                <div className="text-5xl mb-4">{item.icon}</div>
-                <h3 className="text-2xl font-bold mb-3 text-red-400">{item.title}</h3>
-                <p className="text-gray-400">{item.desc}</p>
+                <div className="text-5xl mb-6">{item.icon}</div>
+                <h3 className="text-xl font-semibold mb-3 text-gray-900">{item.title}</h3>
+                <p className="text-gray-500">{item.desc}</p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* How It Works */}
-      <section id="how-it-works" className="relative py-32">
-        <div className="max-w-7xl mx-auto px-6">
+      {/* How It Works - WHITE */}
+      <section id="how-it-works" className="py-32 bg-white">
+        <div className="max-w-7xl mx-auto px-8">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             className="text-center mb-20"
           >
-            <h2 className="text-5xl md:text-6xl font-bold mb-6">
-              The <span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">Transparency Gate</span>
+            <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-6 text-gray-900">
+              The Transparency Gate
             </h2>
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              See exactly what's hidden in your files before you share them. Complete transparency, complete control.
+            <p className="text-xl text-gray-500 max-w-2xl mx-auto">
+              See exactly what's hidden in your files before you share them.
             </p>
           </motion.div>
 
           <div className="grid md:grid-cols-4 gap-6">
             {[
               { step: '01', title: 'Upload', desc: 'Drop your document', icon: '⬆️' },
-              { step: '02', title: 'Reveal', desc: 'See hidden metadata exposed', icon: '🔍' },
-              { step: '03', title: 'Sanitize', desc: 'Strip all risky data', icon: '🧼' },
+              { step: '02', title: 'Reveal', desc: 'See hidden metadata', icon: '🔍' },
+              { step: '03', title: 'Sanitize', desc: 'Strip risky data', icon: '🧼' },
               { step: '04', title: 'Share', desc: 'Send with confidence', icon: '✨' }
             ].map((item, i) => (
               <motion.div
@@ -209,35 +220,32 @@ export default function MarketingPage() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.15 }}
+                transition={{ delay: i * 0.1 }}
+                className="p-10 bg-gray-50 rounded-3xl border border-gray-200 text-center hover:bg-white hover:shadow-xl hover:border-gray-300 transition-all group"
               >
-                <PixelCard variant="indigo" className="w-full h-auto">
-                  <div className="p-8 text-center relative z-10">
-                    <div className="text-sm font-mono text-purple-400 mb-4">{item.step}</div>
-                    <div className="text-5xl mb-4">{item.icon}</div>
-                    <h3 className="text-2xl font-bold mb-2">{item.title}</h3>
-                    <p className="text-gray-400 text-sm">{item.desc}</p>
-                  </div>
-                </PixelCard>
+                <div className="text-xs font-mono text-gray-400 mb-4 tracking-widest">{item.step}</div>
+                <div className="text-5xl mb-6 group-hover:scale-110 transition-transform">{item.icon}</div>
+                <h3 className="text-xl font-semibold mb-2 text-gray-900">{item.title}</h3>
+                <p className="text-gray-500 text-sm">{item.desc}</p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Key Features */}
-      <section id="features" className="relative py-32 bg-gradient-to-b from-black via-cyan-950/10 to-black">
-        <div className="max-w-7xl mx-auto px-6">
+      {/* Features - BLACK */}
+      <section id="features" className="py-32 bg-gray-900 text-white">
+        <div className="max-w-7xl mx-auto px-8">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             className="text-center mb-20"
           >
-            <h2 className="text-5xl md:text-6xl font-bold mb-6">
-              Built for <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">Privacy</span>
+            <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-6">
+              Built for Privacy
             </h2>
-            <p className="text-xl text-gray-400">Enterprise-grade security meets beautiful user experience</p>
+            <p className="text-xl text-gray-400">Enterprise-grade security meets beautiful design</p>
           </motion.div>
 
           <div className="grid md:grid-cols-2 gap-8">
@@ -245,40 +253,34 @@ export default function MarketingPage() {
               {
                 icon: '🔍',
                 title: 'Metadata Transparency',
-                desc: 'See every hidden field before sharing. Full visibility into GPS, device info, and tracking data.',
-                gradient: 'from-purple-600 to-pink-600'
+                desc: 'See every hidden field before sharing. Full visibility into GPS, device info, and tracking data.'
               },
               {
                 icon: '⏰',
                 title: 'ZeroHold™ Technology',
-                desc: 'Files auto-delete at expiry. Your sensitive data doesn\'t linger on our servers.',
-                gradient: 'from-cyan-600 to-blue-600'
+                desc: 'Files auto-delete at expiry. Your sensitive data doesn\'t linger on our servers.'
               },
               {
                 icon: '🤖',
                 title: 'AI-Powered Insights',
-                desc: 'Chat with your documents using RAG. Smart analysis without compromising privacy.',
-                gradient: 'from-blue-600 to-purple-600'
+                desc: 'Chat with your documents using RAG. Smart analysis without compromising privacy.'
               },
               {
                 icon: '👁️',
                 title: 'View-Only Sharing',
-                desc: 'Recipients can view but never download. Watermarked, tracked, and secure.',
-                gradient: 'from-pink-600 to-purple-600'
+                desc: 'Recipients can view but never download. Watermarked, tracked, and secure.'
               }
             ].map((feature, i) => (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, scale: 0.9 }}
+                initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="group p-8 bg-gradient-to-br from-white/5 to-white/0 backdrop-blur-sm border border-white/10 rounded-3xl hover:border-white/30 transition-all hover:shadow-2xl hover:shadow-cyan-500/20"
+                className="p-10 bg-gray-800 border border-gray-700 rounded-3xl hover:bg-gray-750 transition-all"
               >
-                <div className={`w-16 h-16 bg-gradient-to-br ${feature.gradient} rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform`}>
-                  {feature.icon}
-                </div>
-                <h3 className="text-2xl font-bold mb-4">{feature.title}</h3>
+                <div className="text-5xl mb-6">{feature.icon}</div>
+                <h3 className="text-2xl font-semibold mb-4">{feature.title}</h3>
                 <p className="text-gray-400 leading-relaxed">{feature.desc}</p>
               </motion.div>
             ))}
@@ -286,41 +288,29 @@ export default function MarketingPage() {
         </div>
       </section>
 
-      {/* Security & Privacy */}
-      <section id="security" className="relative py-32">
-        <div className="max-w-6xl mx-auto px-6">
+      {/* Security - WHITE */}
+      <section id="security" className="py-32 bg-white">
+        <div className="max-w-6xl mx-auto px-8">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             className="text-center mb-20"
           >
-            <div className="inline-block px-6 py-2 bg-red-900/20 border border-red-500/30 rounded-full mb-6">
-              <span className="text-red-400 font-semibold">Security First</span>
+            <div className="inline-block px-5 py-2 bg-red-100 text-red-600 rounded-full text-sm font-medium mb-6">
+              Security First
             </div>
-            <h2 className="text-5xl md:text-6xl font-bold mb-6">
-              <span className="bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent">
-                50+ Metadata Fields
-              </span>
-              <br />
-              Stripped Automatically
+            <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-6 text-gray-900">
+              50+ Metadata Fields Stripped
             </h2>
+            <p className="text-xl text-gray-500">GPS, device info, editing history — all removed before sharing</p>
           </motion.div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              'GPS Coordinates',
-              'Camera Make/Model',
-              'Software Version',
-              'Edit History',
-              'User Names',
-              'Company Data',
-              'IP Addresses',
-              'Device IDs',
-              'Creation Dates',
-              'File Paths',
-              'Serial Numbers',
-              'Printer Info'
+              'GPS Coordinates', 'Camera Make/Model', 'Software Version', 'Edit History',
+              'User Names', 'Company Data', 'IP Addresses', 'Device IDs',
+              'Creation Dates', 'File Paths', 'Serial Numbers', 'Printer Info'
             ].map((item, i) => (
               <motion.div
                 key={i}
@@ -328,39 +318,38 @@ export default function MarketingPage() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.03 }}
-                className="p-4 bg-gradient-to-br from-red-950/20 to-orange-950/20 border border-red-500/20 rounded-xl backdrop-blur-sm"
+                className="p-4 bg-gray-50 rounded-2xl border border-gray-200"
               >
-                <div className="text-xs font-bold text-red-400 mb-2">REMOVED</div>
-                <div className="text-sm font-semibold">{item}</div>
+                <div className="text-xs font-bold text-red-500 mb-1">REMOVED</div>
+                <div className="text-sm font-medium text-gray-900">{item}</div>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Pricing */}
-      <section id="pricing" className="relative py-32 bg-gradient-to-b from-black via-purple-950/10 to-black">
-        <div className="max-w-7xl mx-auto px-6">
+      {/* Pricing - LIGHT GRAY */}
+      <section id="pricing" className="py-32 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-8">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             className="text-center mb-20"
           >
-            <h2 className="text-5xl md:text-6xl font-bold mb-6">
-              Simple <span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">Pricing</span>
+            <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-6 text-gray-900">
+              Simple Pricing
             </h2>
-            <p className="text-xl text-gray-400">Choose the plan that fits your privacy needs</p>
+            <p className="text-xl text-gray-500">Choose the plan that fits your needs</p>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {[
               {
                 name: 'Free',
                 price: '$0',
                 desc: 'Perfect for personal use',
                 features: ['5 files per month', 'Basic metadata stripping', '24h expiration', 'View-only sharing'],
-                cta: 'Start Free',
                 featured: false
               },
               {
@@ -368,15 +357,13 @@ export default function MarketingPage() {
                 price: '$19',
                 desc: 'For professionals',
                 features: ['Unlimited files', 'Deep metadata analysis', 'Custom expiration', 'AI chat with docs', 'Priority support'],
-                cta: 'Get Pro',
                 featured: true
               },
               {
                 name: 'Enterprise',
                 price: 'Custom',
-                desc: 'For teams & organizations',
+                desc: 'For teams',
                 features: ['Everything in Pro', 'Team management', 'SSO integration', 'Custom branding', 'SLA guarantee'],
-                cta: 'Contact Sales',
                 featured: false
               }
             ].map((plan, i) => (
@@ -386,38 +373,36 @@ export default function MarketingPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className={`p-8 rounded-3xl border ${plan.featured
-                    ? 'bg-gradient-to-br from-purple-600/20 to-cyan-600/20 border-purple-500/50 scale-105'
-                    : 'bg-white/5 border-white/10'
-                  } backdrop-blur-sm relative overflow-hidden`}
+                className={`p-10 rounded-3xl border ${plan.featured
+                  ? 'bg-gray-900 text-white border-gray-900 scale-105 shadow-2xl'
+                  : 'bg-white border-gray-200 text-gray-900'
+                  }`}
               >
                 {plan.featured && (
-                  <div className="absolute top-4 right-4 px-3 py-1 bg-gradient-to-r from-purple-600 to-cyan-600 rounded-full text-xs font-bold">
+                  <div className="inline-block px-3 py-1 bg-white text-gray-900 rounded-full text-xs font-bold mb-4">
                     POPULAR
                   </div>
                 )}
-                <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
-                <div className="text-5xl font-black mb-2">
+                <h3 className="text-2xl font-semibold mb-2">{plan.name}</h3>
+                <div className="text-4xl font-bold mb-2">
                   {plan.price}
-                  {plan.price !== 'Custom' && <span className="text-lg text-gray-400">/mo</span>}
+                  {plan.price !== 'Custom' && <span className="text-lg font-normal opacity-60">/mo</span>}
                 </div>
-                <p className="text-gray-400 mb-8">{plan.desc}</p>
-                <ul className="space-y-3 mb-8">
+                <p className={`${plan.featured ? 'text-gray-400' : 'text-gray-500'} mb-8`}>{plan.desc}</p>
+                <ul className="space-y-3 mb-10">
                   {plan.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-start gap-2">
-                      <svg className="w-5 h-5 text-cyan-400 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                      </svg>
-                      <span className="text-gray-300">{feature}</span>
+                    <li key={idx} className="flex items-start gap-2 text-sm">
+                      <span className={`${plan.featured ? 'text-green-400' : 'text-green-500'}`}>✓</span>
+                      <span className={plan.featured ? 'text-gray-300' : 'text-gray-600'}>{feature}</span>
                     </li>
                   ))}
                 </ul>
-                <ClickSpark sparkColor={plan.featured ? '#06b6d4' : '#8b5cf6'}>
-                  <button className={`w-full py-4 rounded-xl font-bold transition-all ${plan.featured
-                      ? 'bg-gradient-to-r from-purple-600 to-cyan-600 hover:shadow-lg hover:shadow-cyan-500/50'
-                      : 'bg-white/10 hover:bg-white/20 border border-white/20'
+                <ClickSpark sparkColor={plan.featured ? '#fff' : '#000'}>
+                  <button className={`w-full py-4 rounded-xl font-medium transition-all ${plan.featured
+                    ? 'bg-white text-gray-900 hover:bg-gray-100'
+                    : 'bg-gray-900 text-white hover:bg-gray-800'
                     }`}>
-                    {plan.cta}
+                    Get Started
                   </button>
                 </ClickSpark>
               </motion.div>
@@ -426,17 +411,17 @@ export default function MarketingPage() {
         </div>
       </section>
 
-      {/* FAQ */}
-      <section className="relative py-32">
-        <div className="max-w-4xl mx-auto px-6">
+      {/* FAQ - WHITE */}
+      <section className="py-32 bg-white">
+        <div className="max-w-3xl mx-auto px-8">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-5xl md:text-6xl font-bold mb-6">
-              Frequently Asked <span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">Questions</span>
+            <h2 className="text-4xl md:text-5xl font-semibold tracking-tight text-gray-900">
+              Questions & Answers
             </h2>
           </motion.div>
 
@@ -444,7 +429,7 @@ export default function MarketingPage() {
             {[
               {
                 q: 'How does Fidera protect my privacy?',
-                a: 'Fidera automatically strips 50+ metadata fields from your documents before sharing, including GPS coordinates, device information, and editing history. We use industry-standard encryption and our ZeroHold™ technology ensures files are permanently deleted at expiration.'
+                a: 'Fidera strips 50+ metadata fields from documents before sharing, including GPS, device info, and editing history. We use AES-256 encryption and ZeroHold™ ensures permanent deletion at expiration.'
               },
               {
                 q: 'What file formats are supported?',
@@ -460,7 +445,7 @@ export default function MarketingPage() {
               },
               {
                 q: 'What happens when files expire?',
-                a: 'Files are permanently deleted from our servers using our ZeroHold™ technology. This includes all copies, metadata, and AI-generated embeddings. No recovery is possible.'
+                a: 'Files are permanently deleted from our servers using ZeroHold™. This includes all copies, metadata, and AI-generated embeddings. No recovery is possible.'
               }
             ].map((faq, i) => (
               <motion.div
@@ -468,16 +453,15 @@ export default function MarketingPage() {
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.05 }}
-                className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden"
+                className="bg-gray-50 border border-gray-200 rounded-2xl overflow-hidden"
               >
                 <button
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                  className="w-full p-6 text-left flex items-center justify-between hover:bg-white/5 transition"
+                  className="w-full p-6 text-left flex items-center justify-between hover:bg-gray-100 transition"
                 >
-                  <span className="font-bold text-lg pr-8">{faq.q}</span>
+                  <span className="font-semibold text-gray-900 pr-8">{faq.q}</span>
                   <svg
-                    className={`w-6 h-6 text-purple-400 transition-transform ${openFaq === i ? 'rotate-180' : ''}`}
+                    className={`w-5 h-5 text-gray-400 transition-transform flex-shrink-0 ${openFaq === i ? 'rotate-180' : ''}`}
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -487,7 +471,7 @@ export default function MarketingPage() {
                 </button>
                 {openFaq === i && (
                   <div className="px-6 pb-6">
-                    <p className="text-gray-400 leading-relaxed">{faq.a}</p>
+                    <p className="text-gray-600 leading-relaxed">{faq.a}</p>
                   </div>
                 )}
               </motion.div>
@@ -496,85 +480,81 @@ export default function MarketingPage() {
         </div>
       </section>
 
-      {/* Final CTA */}
-      <section className="relative py-32 bg-gradient-to-b from-black via-purple-950/20 to-black">
-        <div className="max-w-5xl mx-auto px-6 text-center">
+      {/* Final CTA - BLACK */}
+      <section className="py-32 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-8 text-center">
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="p-16 bg-gradient-to-br from-purple-600/20 to-cyan-600/20 backdrop-blur-xl border border-purple-500/30 rounded-3xl"
+            className="p-16 bg-gray-900 text-white rounded-[40px]"
           >
-            <h2 className="text-5xl md:text-6xl font-bold mb-6">
-              Ready to take control of your <span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">privacy</span>?
+            <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-6">
+              Ready to protect your documents?
             </h2>
-            <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
-              Join thousands protecting their sensitive files with Fidera's privacy-first platform
+            <p className="text-xl text-gray-400 mb-10">
+              Join thousands securing their sensitive files with Fidera
             </p>
-            <ClickSpark sparkColor="#8b5cf6" sparkCount={16} sparkRadius={25}>
-              <button className="px-12 py-5 bg-gradient-to-r from-purple-600 to-cyan-600 rounded-full font-bold text-xl shadow-2xl shadow-purple-500/50 hover:shadow-cyan-500/50 transition-all hover:scale-105">
-                Get Started Free
+            <ClickSpark sparkColor="#fff" sparkCount={14} sparkRadius={22}>
+              <button className="px-12 py-5 bg-white text-gray-900 rounded-full font-semibold text-lg hover:bg-gray-100 transition-all">
+                Get Started Free →
               </button>
             </ClickSpark>
-            <p className="text-sm text-gray-500 mt-6">No credit card required • 2-minute setup • Cancel anytime</p>
+            <p className="text-sm text-gray-500 mt-8">No credit card required • 2-minute setup</p>
           </motion.div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-white/10 py-16 bg-black">
-        <div className="max-w-7xl mx-auto px-6">
+      {/* Footer - WHITE */}
+      <footer className="border-t border-gray-200 py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-8">
           <div className="grid md:grid-cols-4 gap-12 mb-12">
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-purple-600 via-blue-500 to-cyan-400 rounded-xl" />
-                <span className="text-2xl font-bold">Fidera</span>
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="40" height="40" rx="10" fill="#111827" />
+                  <path d="M12 28V12H24V15H16V18H23V21H16V28H12Z" fill="white" />
+                </svg>
+                <span className="text-xl font-semibold text-gray-900">idera</span>
               </div>
-              <p className="text-gray-400 text-sm leading-relaxed">
+              <p className="text-gray-500 text-sm">
                 Privacy-first document sharing for the modern world.
               </p>
             </div>
 
             <div>
-              <h4 className="font-bold mb-4">Product</h4>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li><a href="#features" className="hover:text-white transition">Features</a></li>
-                <li><a href="#security" className="hover:text-white transition">Security</a></li>
-                <li><a href="#pricing" className="hover:text-white transition">Pricing</a></li>
-                <li><a href="#" className="hover:text-white transition">Roadmap</a></li>
+              <h4 className="font-semibold mb-4 text-gray-900">Product</h4>
+              <ul className="space-y-2 text-gray-500 text-sm">
+                <li><a href="#features" className="hover:text-gray-900 transition">Features</a></li>
+                <li><a href="#security" className="hover:text-gray-900 transition">Security</a></li>
+                <li><a href="#pricing" className="hover:text-gray-900 transition">Pricing</a></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-bold mb-4">Company</h4>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li><a href="#" className="hover:text-white transition">About</a></li>
-                <li><a href="#" className="hover:text-white transition">Blog</a></li>
-                <li><a href="#" className="hover:text-white transition">Careers</a></li>
-                <li><a href="#" className="hover:text-white transition">Contact</a></li>
+              <h4 className="font-semibold mb-4 text-gray-900">Company</h4>
+              <ul className="space-y-2 text-gray-500 text-sm">
+                <li><a href="#" className="hover:text-gray-900 transition">About</a></li>
+                <li><a href="#" className="hover:text-gray-900 transition">Blog</a></li>
+                <li><a href="#" className="hover:text-gray-900 transition">Careers</a></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-bold mb-4">Legal</h4>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li><a href="#" className="hover:text-white transition">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-white transition">Terms of Service</a></li>
-                <li><a href="#" className="hover:text-white transition">Security</a></li>
+              <h4 className="font-semibold mb-4 text-gray-900">Legal</h4>
+              <ul className="space-y-2 text-gray-500 text-sm">
+                <li><a href="#" className="hover:text-gray-900 transition">Privacy</a></li>
+                <li><a href="#" className="hover:text-gray-900 transition">Terms</a></li>
               </ul>
             </div>
           </div>
 
-          <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-gray-500 text-sm">
-              © 2026 Fidera. All rights reserved.
-            </p>
-            <div className="flex gap-6">
-              {['Twitter', 'GitHub', 'LinkedIn'].map((social) => (
-                <a key={social} href="#" className="text-gray-400 hover:text-white transition text-sm">
-                  {social}
-                </a>
-              ))}
+          <div className="pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-gray-400 text-sm">© 2026 Fidera. All rights reserved.</p>
+            <div className="flex gap-6 text-gray-400 text-sm">
+              <a href="#" className="hover:text-gray-900 transition">Twitter</a>
+              <a href="#" className="hover:text-gray-900 transition">GitHub</a>
+              <a href="#" className="hover:text-gray-900 transition">LinkedIn</a>
             </div>
           </div>
         </div>
