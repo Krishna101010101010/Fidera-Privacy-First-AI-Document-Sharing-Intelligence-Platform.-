@@ -5,6 +5,7 @@ from typing import Dict, Any, List, Optional
 from uuid import uuid4, UUID
 import os
 import shutil
+import io
 from datetime import datetime, timedelta
 
 from app.core.db import get_session
@@ -127,22 +128,11 @@ async def confirm_upload(
         # 3. Store in Secure Bucket
         with open(temp_clean_path, "rb") as f:
             data = f.read()
-            # New filename for secure storage (randomized? Keep same?)
-            # Usually safer to rename.
+            # New filename for secure storage
             secure_filename = f"secure_{db_file.id}_{db_file.filename}"
-            # Storage service upload? We need a generic upload or use the client directly?
-            # Let's add a generic upload_secure to service later or just reuse upload logic.
-            # I'll manually call storage client here or create a helper method.
-            # Reuse upload_to_staging logic but to secure bucket... 
-            # Better to add upload_to_secure method in StorageService.
-            # For now I will direct call client cause I know the implementation
-            storage_service.client.put_object(
-                settings.SECURE_BUCKET,
-                secure_filename,
-                io.BytesIO(data),
-                len(data),
-                content_type=db_file.content_type
-            )
+            
+            # Upload to secure bucket using service abstraction
+            storage_service.upload_to_secure(data, secure_filename, db_file.content_type)
             
         # 4. Remove from Staging (MinIO)
         storage_service.client.remove_object(settings.STAGING_BUCKET, db_file.storage_path)
@@ -236,5 +226,5 @@ async def get_my_files(
     files = session.exec(statement).all()
     return files
 
-import io # Missing import
+
 

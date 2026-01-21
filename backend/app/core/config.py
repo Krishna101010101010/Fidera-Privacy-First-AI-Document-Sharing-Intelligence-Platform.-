@@ -6,7 +6,9 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     
     # Database
-    DATABASE_URL: str = "postgresql://fidera_user:fidera_password@localhost:5432/fidera_db"
+    # Database
+    # DATABASE_URL: str = "postgresql://fidera_user:fidera_password@localhost:5432/fidera_db"
+    DATABASE_URL: str = "sqlite:///./fidera.db"
     
     # MinIO
     MINIO_ENDPOINT: str = "localhost:9000"

@@ -43,6 +43,10 @@ def delete_expired_files():
                 file.status = FileStatus.EXPIRED
                 file.storage_path = "PURGED" # Explicitly overwrite path
                 
+                # 3. Remove Embeddings (RAG)
+                from app.services.ai import ai_service
+                ai_service.delete_file_embeddings(file.id)
+
                 # ZeroHold: Remove metadata snapshot too?
                 file.metadata_snapshot = {"_purged": "ZeroHold Enforcement"}
                 

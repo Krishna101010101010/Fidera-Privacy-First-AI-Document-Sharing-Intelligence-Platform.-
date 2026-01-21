@@ -3,8 +3,8 @@ from app.core.config import get_settings
 
 settings = get_settings()
 
-# connect_args={"check_same_thread": False} for SQLite, but we use Postgres
-engine = create_engine(settings.DATABASE_URL, echo=True)
+connect_args = {"check_same_thread": False} if "sqlite" in settings.DATABASE_URL else {}
+engine = create_engine(settings.DATABASE_URL, echo=True, connect_args=connect_args)
 
 def init_db():
     from app.models.file import File

@@ -61,6 +61,14 @@ class AIService:
         Ingest document using LlamaIndex.
         """
         try:
+            # Check if already indexed to prevent duplicates
+            existing_count = self.chroma_collection.count()
+            if existing_count > 0:
+                results = self.chroma_collection.get(where={"file_id": str(file_id)}, limit=1)
+                if results and len(results['ids']) > 0:
+                    logger.info(f"File {file_id} already indexed. Skipping.")
+                    return True
+
             # Load Data using SimpleDirectoryReader
             loader = SimpleDirectoryReader(input_files=[file_path])
             documents = loader.load_data()
@@ -98,6 +106,18 @@ class AIService:
             return True
         except Exception as e:
             logger.error(f"LlamaIndex Ingestion failed: {e}")
+            return False
+
+    def delete_file_embeddings(self, file_id: str) -> bool:
+        """
+        deletes vectors associated with a file_id.
+        """
+        try:
+            logger.info(f"Deleting embeddings for {file_id}")
+            self.chroma_collection.delete(where={"file_id": str(file_id)})
+            return True
+        except Exception as e:
+            logger.error(f"Failed to delete embeddings for {file_id}: {e}")
             return False
 
     def chat(self, file_id: str, message: str, model_name: str) -> Generator[str, None, None]:

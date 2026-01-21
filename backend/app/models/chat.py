@@ -1,8 +1,10 @@
 from pydantic import BaseModel
 from typing import List
 
+from uuid import UUID
+
 class ChatRequest(BaseModel):
-    file_id: str
+    file_id: UUID
     message: str
     model: str
 

@@ -23,7 +23,7 @@ async def chat_message(request: ChatRequest):
 
     try:
         return StreamingResponse(
-            ai_service.chat(request.file_id, request.message, request.model),
+            ai_service.chat(str(request.file_id), request.message, request.model),
             media_type="text/plain"
         )
     except Exception as e:
