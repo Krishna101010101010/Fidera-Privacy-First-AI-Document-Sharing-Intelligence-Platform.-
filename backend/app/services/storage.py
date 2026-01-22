@@ -92,14 +92,22 @@ class StorageService:
         )
         self.client.remove_object(settings.STAGING_BUCKET, staging_filename)
 
-    def delete_secure(self, filename: str):
+    def delete_file(self, bucket: str, filename: str):
+        """Generic delete file from bucket."""
         if self.use_local:
-            path = os.path.join(self.local_base, settings.SECURE_BUCKET, filename)
+            path = os.path.join(self.local_base, bucket, filename)
             if os.path.exists(path):
                 os.remove(path)
             return
 
-        self.client.remove_object(settings.SECURE_BUCKET, filename)
+        try:
+            self.client.remove_object(bucket, filename)
+        except S3Error as e:
+            # If checking logs, we might want to know, but usually idempotent
+            pass
+
+    def delete_secure(self, filename: str):
+        self.delete_file(settings.SECURE_BUCKET, filename)
     
     def download_to_temp(self, bucket: str, filename: str, temp_path: str):
         if self.use_local:

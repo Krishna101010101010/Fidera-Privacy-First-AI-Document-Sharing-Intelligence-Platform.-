@@ -35,9 +35,10 @@ def delete_expired_files():
         for file in expired_files:
             try:
                 # 1. Delete from Secure Storage (MinIO)
+                # 1. Delete from Secure Storage (MinIO)
                 if file.storage_path:
-                    storage_service.client.remove_object(settings.SECURE_BUCKET, file.storage_path)
-                    logger.info(f"Deleted object {file.storage_path} from MinIO")
+                    storage_service.delete_secure(file.storage_path)
+                    logger.info(f"Deleted object {file.storage_path} from Storage")
                 
                 # 2. Update DB Status
                 file.status = FileStatus.EXPIRED

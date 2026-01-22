@@ -135,7 +135,7 @@ async def confirm_upload(
             storage_service.upload_to_secure(data, secure_filename, db_file.content_type)
             
         # 4. Remove from Staging (MinIO)
-        storage_service.client.remove_object(settings.STAGING_BUCKET, db_file.storage_path)
+        storage_service.delete_file(settings.STAGING_BUCKET, db_file.storage_path)
         
         # 5. Update DB
         db_file.status = FileStatus.STORED
