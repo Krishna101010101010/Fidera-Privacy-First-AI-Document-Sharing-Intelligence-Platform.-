@@ -7,13 +7,13 @@ import logging
 router = APIRouter()
 logger = logging.getLogger(__name__)
 
-@router.get("/models", response_model=ModelList)
+@router.get("/models", response_model=ModelList, summary="List Available Models", description="Retrieves a list of AI models currently available via the Ollama service.")
 async def get_models():
     """Get available Ollama models."""
     models = ai_service.get_available_models()
     return {"models": models}
 
-@router.post("/message")
+@router.post("/message", summary="AI Document Chat", description="Initiates a streaming chat session with a specific document using RAG (Retrieval-Augmented Generation).")
 async def chat_message(request: ChatRequest):
     """
     Stream RAG chat response.
@@ -30,7 +30,7 @@ async def chat_message(request: ChatRequest):
         logger.error(f"Chat failed: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/debug/{file_id}")
+@router.get("/debug/{file_id}", summary="Debug Document Index", description="Inspects the indexed chunks and metadata for a specific document stored in the vector database.")
 async def debug_chat(file_id: str):
     """
     Debug: Inspect indexed content for a file.

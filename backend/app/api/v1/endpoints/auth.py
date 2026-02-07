@@ -12,7 +12,7 @@ from app.models.user import User, UserCreate, UserRead, Token
 router = APIRouter()
 settings = get_settings()
 
-@router.post("/login", response_model=Token)
+@router.post("/login", response_model=Token, summary="User Login", description="Authenticates a user and returns an access token.")
 def login_access_token(
     session: Session = Depends(get_session),
     form_data: OAuth2PasswordRequestForm = Depends()
@@ -29,7 +29,7 @@ def login_access_token(
         "token_type": "bearer",
     }
 
-@router.post("/register", response_model=UserRead)
+@router.post("/register", response_model=UserRead, summary="User Registration", description="Registers a new user in the system.")
 def register_user(
     *,
     session: Session = Depends(get_session),
@@ -49,7 +49,7 @@ def register_user(
     session.refresh(user)
     return user
 
-@router.get("/me", response_model=UserRead)
+@router.get("/me", response_model=UserRead, summary="Current User Info", description="Retrieves information about the currently authenticated user.")
 def read_users_me(
     current_user: User = Depends(deps.get_current_user),
 ) -> Any:

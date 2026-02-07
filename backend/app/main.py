@@ -7,7 +7,19 @@ from app.core.db import init_db
 settings = get_settings()
 
 app = FastAPI(
-    title=settings.PROJECT_NAME,
+    title="Fidera Privacy-First AI Documentation Platform",
+    description="""
+    Fidera is a privacy-first platform for secure document sharing and AI-powered intelligence.
+    
+    ## Features
+    * **Ephemeral Intake**: Files are staged and metadata is exposed for transparency.
+    * **Sanitization**: Automatic stripping of sensitive metadata before secure storage.
+    * **AI Intelligence**: Privacy-focused RAG (Retrieval-Augmented Generation) chat with documents.
+    * **Secure Storage**: Integration with MinIO for robust object storage.
+    """,
+    version="1.0.0",
+    docs_url="/docs",
+    redoc_url="/redoc",
     openapi_url=f"{settings.API_V1_STR}/openapi.json"
 )
 

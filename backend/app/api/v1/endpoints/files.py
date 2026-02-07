@@ -21,7 +21,7 @@ router = APIRouter()
 settings = get_settings()
 TEMP_DIR = "temp_processing"
 
-@router.post("/stage", response_model=FileMetadataResponse)
+@router.post("/stage", response_model=FileMetadataResponse, summary="Ephemeral File Intake", description="Stages a file for metadata extraction and transparency review. The file is stored in a temporary staging area and is not yet permanent.")
 async def stage_file(
     file: UploadFile = FastAPIFile(...),
     session: Session = Depends(get_session),
@@ -89,7 +89,7 @@ async def stage_file(
         if os.path.exists(temp_path):
             os.remove(temp_path)
 
-@router.post("/{file_id}/confirm", response_model=Dict[str, Any])
+@router.post("/{file_id}/confirm", response_model=Dict[str, Any], summary="Confirm Sanitization & Storage", description="Sanitizes the staged file by stripping metadata and moves it to secure permanent storage with a defined expiry.")
 async def confirm_upload(
     file_id: UUID,
     expiry_hours: int,
@@ -160,7 +160,7 @@ async def confirm_upload(
             if os.path.exists(p):
                 os.remove(p)
 
-@router.get("/{file_id}", response_model=FileRead)
+@router.get("/{file_id}", response_model=FileRead, summary="Get File Metadata", description="Retrieves the metadata for a specific file, including its status and expiry information.")
 async def get_file_info(
     file_id: UUID,
     session: Session = Depends(get_session)
@@ -179,7 +179,7 @@ async def get_file_info(
         
     return db_file
 
-@router.get("/{file_id}/content")
+@router.get("/{file_id}/content", summary="Stream File Content", description="Provides a streaming response of the file's content for secure viewing in the browser.")
 async def get_file_content(
     file_id: UUID,
     session: Session = Depends(get_session)
@@ -212,7 +212,7 @@ async def get_file_content(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/dashboard", response_model=List[FileRead])
+@router.get("/dashboard", response_model=List[FileRead], summary="List My Files", description="Returns a list of all files owned by the currently authenticated user.")
 async def get_my_files(
     session: Session = Depends(get_session),
     current_user: User = Depends(deps.get_current_user),
