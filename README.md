@@ -18,7 +18,7 @@ Open a NEW terminal tab:
 source venv/bin/activate
 pip install -r backend/requirements.txt
 # Ensure you have installed 'exiftool' on your Mac: brew install exiftool
-uvicorn backend.app.main:app --reload
+uvicorn --app-dir backend app.main:app --reload
 ```
 *Backend runs on http://localhost:8000*
 

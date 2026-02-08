@@ -40,6 +40,9 @@ async def stage_file(
     temp_path = os.path.join(TEMP_DIR, temp_filename)
     
     # 1. Save locally for processing
+    if not os.path.exists(TEMP_DIR):
+        os.makedirs(TEMP_DIR)
+        
     with open(temp_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
         
